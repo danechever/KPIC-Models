@@ -1,0 +1,10 @@
+
+#--Tempoary files
+**/*.swp
+
+#--Temporary MATLAB files
+**/*.asv
+**/*.m~
+*.m~
+
+*.pyc
