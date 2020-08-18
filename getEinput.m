@@ -47,14 +47,15 @@ function [E,coords,w_I] = getEinput(fiber_props,sys_props,wvls,N_iris,N_pad)
     %%- Make a 2D array containing the iris 
     switch lower(sys_props.pupil_shape)
         case 'circ'
-            IRIS = makeCircularPupil(N_iris/2, N_pad );
+            IRIS = makeCircularPupil(N_iris/2, 2*N_iris );
         case 'keck'
-            [IRIS,N_iris] = makeKeckPupil( N_iris, N_pad );
+            [IRIS,N_iris] = makeKeckPupil( N_iris, 2*N_iris );
         case 'kecklab'
-            [IRIS,N_iris] = makeKeckLabPupil( N_iris, N_pad );
+            [IRIS,N_iris] = makeKeckLabPupil( N_iris, 2*N_iris );
         otherwise
             error('sys_prop.pupil_shape not recognized. options: circ or keck');
     end
+    IRIS = padOrCropEven(IRIS,N_pad);
     
     %%- Build the E-field cube at the plane of interest 
     coords = generateCoordinates(N_pad);% Creates arrays with coordinates 

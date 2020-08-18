@@ -27,6 +27,7 @@ function eta = getCouplingEfficiency(E_pup,sys_props,fiber_props,wvls,dx,Nbeam)
         wvl = wvls(wvl_index); % wavelength [meters] 
         
         E_pup_lam = E_pup(:,:,wvl_index); % get slice of cube
+        E_pup_lam = padOrCropEven(E_pup_lam,2*round(Nbeam));
         
         totalPower = sum(abs(E_pup_lam(:).^2));
         

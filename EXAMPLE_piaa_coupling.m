@@ -70,7 +70,7 @@ piaa_props.Dstop = 20e-3; % Diameter of the output beam [meters]
 % vfn_props.charge = 2; 
 
 %%- Other beam properties
-N_iris = 1000; % Number of samples across the beam at the iris
+N_iris = 500; % Number of samples across the beam at the iris
 % Wavelengths stored as a vector (e.g. wvls = [2.0e-6 2.2e-6 2.4e-6];)
 wvls = (2:0.2:2.4)*1e-6;% wavelengths [meters]
 %wvls = (3.4:0.2:4.0)*1e-6;% wavelengths [meters]
@@ -87,7 +87,7 @@ if(strcmpi(mode,'apod') && strcmpi(apod_props.type,'fits'))
 end
 %% Get E-field at the iris 
 
-N_grid = N_iris*N_lambdaFnum;
+N_grid = 2^nextpow2(N_iris*N_lambdaFnum);
 [E_iris,coords,w_I] = getEinput(source_fiber_props,sys_props,wvls,N_iris,N_grid);
 
 %%- Plot the E-field at the iris 
@@ -95,24 +95,24 @@ N_grid = N_iris*N_lambdaFnum;
 xvals = coords.xvals;% Helpful for plotting
 yvals = coords.yvals;
 
-% figure(1);
-% for wvl_index = 1:numel(wvls)
-%     
-%     % amplitude 
-%     ax1=subplot(numel(wvls),2,2*wvl_index-1);
-%     imagesc(xvals/N_iris,yvals/N_iris,abs(E_iris(:,:,wvl_index)).^2);
-%     axis image;set(gca,'ydir','normal');
-%     axis([-0.5 0.5 -0.5 0.5]);
-%     colorbar;colormap(ax1,gray);
-%     
-%     % phase 
-%     ax2=subplot(numel(wvls),2,2*wvl_index);
-%     imagesc(xvals/N_iris,yvals/N_iris,angle(E_iris(:,:,wvl_index)));
-%     axis image;set(gca,'ydir','normal');
-%     axis([-0.5 0.5 -0.5 0.5]);
-%     caxis([-pi pi]);colorbar;colormap(ax2,hsv);
-%     
-% end
+figure(1);
+for wvl_index = 1:numel(wvls)
+    
+    % amplitude 
+    ax1=subplot(numel(wvls),2,2*wvl_index-1);
+    imagesc(xvals/N_iris,yvals/N_iris,abs(E_iris(:,:,wvl_index)).^2);
+    axis image;set(gca,'ydir','normal');
+    axis([-0.5 0.5 -0.5 0.5]);
+    colorbar;colormap(ax1,gray);
+    
+    % phase 
+    ax2=subplot(numel(wvls),2,2*wvl_index);
+    imagesc(xvals/N_iris,yvals/N_iris,angle(E_iris(:,:,wvl_index)));
+    axis image;set(gca,'ydir','normal');
+    axis([-0.5 0.5 -0.5 0.5]);
+    caxis([-pi pi]);colorbar;colormap(ax2,hsv);
+    
+end
 
 %% Get E-field at the mask 
 
@@ -121,24 +121,24 @@ E_b4mask = propagateFresnel(E_iris,sys_props.z_IM,wvls,dx);
 
 %%- Plot the E-field just before the mask
 
-% figure(1);
-% for wvl_index = 1:numel(wvls)
-%     
-%     % amplitude 
-%     ax1=subplot(numel(wvls),2,2*wvl_index-1);
-%     imagesc(xvals/N_iris,yvals/N_iris,abs(E_b4mask(:,:,wvl_index)).^2);
-%     axis image;set(gca,'ydir','normal');
-%     axis([-0.5 0.5 -0.5 0.5]);
-%     colorbar;colormap(ax1,gray);
-%     
-%     % phase 
-%     ax2=subplot(numel(wvls),2,2*wvl_index);
-%     imagesc(xvals/N_iris,yvals/N_iris,angle(E_b4mask(:,:,wvl_index)));
-%     axis image;set(gca,'ydir','normal');
-%     axis([-0.5 0.5 -0.5 0.5]);
-%     caxis([-pi pi]);colorbar;colormap(ax2,hsv);
-%     
-% end
+figure(1);
+for wvl_index = 1:numel(wvls)
+    
+    % amplitude 
+    ax1=subplot(numel(wvls),2,2*wvl_index-1);
+    imagesc(xvals/N_iris,yvals/N_iris,abs(E_b4mask(:,:,wvl_index)).^2);
+    axis image;set(gca,'ydir','normal');
+    axis([-0.5 0.5 -0.5 0.5]);
+    colorbar;colormap(ax1,gray);
+    
+    % phase 
+    ax2=subplot(numel(wvls),2,2*wvl_index);
+    imagesc(xvals/N_iris,yvals/N_iris,angle(E_b4mask(:,:,wvl_index)));
+    axis image;set(gca,'ydir','normal');
+    axis([-0.5 0.5 -0.5 0.5]);
+    caxis([-pi pi]);colorbar;colormap(ax2,hsv);
+    
+end
 
 %% Apply mask 
 

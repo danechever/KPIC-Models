@@ -71,9 +71,9 @@ function Eout = applyPIAA(Ein,piaa_props,wvls,dx)
         Ein_lam = Ein(:,:,wvl_index); % get slice of cube
 
         E1 = Ein_lam.*exp(1i*phzLENS1);
-        E2 = propagateFresnel(E1,L,wvls,dx);
+        E2 = propagateFresnel(E1,L,wvl,dx);
         E3 = E2.*exp(1i*phzLENS2).*STOP;
-        E4 = propagateFresnel(E3,-L,wvls,dx);
+        E4 = propagateFresnel(E3,-L,wvl,dx);
 
         Eout(:,:,wvl_index) = E4; % insert slice into cube
         

@@ -6,11 +6,11 @@ clear ;
 %% Inputs 
 
 % Sampling parameters
-Narr = 1024; 
-Nbeam = 1000;
+Nbeam = 500;
+N_lambdaFnum = 4;
 
 wvls = (2:0.1:4.0)*1e-6;% wavelengths [meters]
-wvl_design = 2.2e-6; % design wavelength [meters]
+wvl_design = 3.7e-6; % design wavelength [meters]
 
 %%- Fiber properties (properties store in fiber_props struct)
 
@@ -33,24 +33,35 @@ sys_props.pupil_shape = 'kecklab';
 
 sys_props.D_I = 12.3e-3; % diameter of the input beam [meters] 
 
-% % use the optimal focal length at the design wavelength 
+% Set the focal length 
+% use the optimal focal length at the design wavelength 
 % sys_props.f_fiber = getMFD(fiber_props,wvl_design)*sys_props.D_I/wvl_design/1.4;
-% use the actual focal length
-sys_props.f_fiber = 36.6e-3;
+sys_props.f_fiber = 36.6e-3;% alternatively, use the actual focal length
+
+%%- PIAA properties 
+piaa_props.filename = 'piaa/KPIAA-01.csv';% file containing sag profiles 
+piaa_props.L = 50e-3; % Distance between PIAA surfaces [meters]
+piaa_props.material = 'CaF2'; % piaa lens material 
+piaa_props.Dstop = 20e-3; % Diameter of the output beam [meters]
+
+apply_piaa = true; 
 
 %% Make the pupil mask 
 
 %%- Make a 2D array containing the iris 
 switch lower(sys_props.pupil_shape)
     case 'circ'
-        PUPIL = makeCircularPupil(Nbeam/2, Narr );
+        PUPIL = makeCircularPupil(Nbeam/2, 2*Nbeam );
     case 'keck'
-        [PUPIL,Nbeam] = makeKeckPupil( Nbeam, Narr );
+        [PUPIL,Nbeam] = makeKeckPupil( Nbeam, 2*Nbeam );
     case 'kecklab'
-        [PUPIL,Nbeam] = makeKeckLabPupil( Nbeam, Narr );
+        [PUPIL,Nbeam] = makeKeckLabPupil( Nbeam, 2*Nbeam );
     otherwise
         error('sys_prop.pupil_shape not recognized.');
 end
+Narr = 2^nextpow2(Nbeam*N_lambdaFnum);
+PUPIL = padOrCropEven(PUPIL,Narr);
+dx = sys_props.D_I/Nbeam; % sample spacing [meters]
 
 % E has dimensions Narr x Narr x number of wavelengths 
 E = zeros(Narr,Narr,numel(wvls)); % Empty cube 
@@ -58,9 +69,11 @@ for wvl_index = 1:numel(wvls) % loop over wavelengths
     E(:,:,wvl_index) = PUPIL; % Add 2D E-field to the cube
 end
 
+if(apply_piaa)
+    addpath('piaa')
+    E = applyPIAA(E,piaa_props,wvls,dx);
+end
 %% 
-
-dx = sys_props.D_I/Nbeam; % sample spacing in pupil [meters]
 
 etas = getCouplingEfficiency(E,sys_props,fiber_props,wvls,dx,Nbeam);
 
