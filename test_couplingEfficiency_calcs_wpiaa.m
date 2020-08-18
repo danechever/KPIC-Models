@@ -24,19 +24,23 @@ wvl_design = 3.7e-6; % design wavelength [meters]
 fiber_props.core_rad = 6.5e-6;% Core radius [meters]
 fiber_props.NA = 0.175;% Measured to be 0.175+-.01
 
+% Choose the fiber mode approximation  
 % fiber_props.type = 'gaussian';
 fiber_props.type = 'bessel'; % This one is more accurate 
 
+% Choose pupil mask 
 % sys_props.pupil_shape = 'circ';
-% sys_props.pupil_shape = 'keck';
-sys_props.pupil_shape = 'kecklab';
+sys_props.pupil_shape = 'keck';
+% sys_props.pupil_shape = 'kecklab';
 
-sys_props.D_I = 12.3e-3; % diameter of the input beam [meters] 
+% diameter of the input beam [meters] 
+% sys_props.D_I = 12.3e-3; % Keck lab mask 
+sys_props.D_I = 12.6e-3; % actual Keck pupil
 
 % Set the focal length 
 % use the optimal focal length at the design wavelength 
-% sys_props.f_fiber = getMFD(fiber_props,wvl_design)*sys_props.D_I/wvl_design/1.4;
-sys_props.f_fiber = 36.6e-3;% alternatively, use the actual focal length
+sys_props.f_fiber = getMFD(fiber_props,wvl_design)*sys_props.D_I/wvl_design/1.4;
+% sys_props.f_fiber = 36.6e-3;% alternatively, use the actual focal length
 
 %%- PIAA properties 
 piaa_props.filename = 'piaa/KPIAA-01.csv';% file containing sag profiles 
