@@ -8,3 +8,7 @@
 *.m~
 
 *.pyc
+
+outputs/
+
+util/.DS_Store
