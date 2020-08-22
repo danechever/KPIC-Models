@@ -3,13 +3,20 @@
 
 clear ;
 
+addpath('util')
+
+% Add the VFNlib and falco to your path 
+path2vfnlib = '~/Desktop/VFN/VFN-Simulations/VFNlib';
+addpath(path2vfnlib);
+
+
 %% Inputs 
 
 % Sampling parameters
-Nbeam = 500;
+Nbeam = 1000;
 N_lambdaFnum = 4;
 
-wvls = (2:0.1:4.0)*1e-6;% wavelengths [meters]
+wvls = (2:0.2:4.0)*1e-6;% wavelengths [meters]
 wvl_design = 3.7e-6; % design wavelength [meters]
 
 %%- Fiber properties (properties store in fiber_props struct)
@@ -77,6 +84,7 @@ if(apply_piaa)
     addpath('piaa')
     E = applyPIAA(E,piaa_props,wvls,dx);
 end
+
 %% 
 
 etas = getCouplingEfficiency(E,sys_props,fiber_props,wvls,dx,Nbeam);

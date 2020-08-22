@@ -75,10 +75,20 @@ function Eout = applyPIAA(Ein,piaa_props,wvls,dx)
         E3 = E2.*exp(1i*phzLENS2).*STOP;
         E4 = propagateFresnel(E3,-L,wvl,dx);
 
+        if(show_plots)
+            xvals = coords.xvals;yvals = coords.yvals;
+            figure(103);imagesc(xvals*dx*1e3,yvals*dx*1e3,angle(exp(1i*phzLENS1)));
+                colorbar;axis image;set(gca,'ydir','normal');
+                xlabel('x [mm]');ylabel('y [mm]');title('Sag 1 [mm]');
+            figure(104);imagesc(xvals*dx*1e3,yvals*dx*1e3,angle(exp(1i*phzLENS2)));
+                colorbar;axis image;set(gca,'ydir','normal');
+                xlabel('x [mm]');ylabel('y [mm]');title('Sag 2 [mm]');
+        end
+        
         Eout(:,:,wvl_index) = E4; % insert slice into cube
         
         if(show_plots)
-            figure(103);imagesc(xvals*dx*1e3,yvals*dx*1e3,abs(E2));
+            figure(105);imagesc(xvals*dx*1e3,yvals*dx*1e3,abs(E2));
                 colorbar;axis image;set(gca,'ydir','normal');
                 xlabel('x [mm]');ylabel('y [mm]');title('|E| at PIAA lens 2');
         end

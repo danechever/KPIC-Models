@@ -72,8 +72,10 @@ piaa_props.Dstop = 20e-3; % Diameter of the output beam [meters]
 %%- Other beam properties
 N_iris = 500; % Number of samples across the beam at the iris
 % Wavelengths stored as a vector (e.g. wvls = [2.0e-6 2.2e-6 2.4e-6];)
-wvls = (2:0.2:2.4)*1e-6;% wavelengths [meters]
+% wvls = (2:0.2:2.4)*1e-6;% wavelengths [meters]
+% wvls = linspace(1.991,2.302,9)*1e-6;% wavelengths [meters] for Ks band
 %wvls = (3.4:0.2:4.0)*1e-6;% wavelengths [meters]
+wvls = linspace(3.426,4.126,9)*1e-6;% wavelengths [meters] for Lp band
 % Beam sampling at camera
 N_lambdaFnum = 4; % Number of samples per lambda*F# at the camera 
 N_pix = 64;  % Number of pixels in final image
